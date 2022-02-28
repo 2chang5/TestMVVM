@@ -11,31 +11,25 @@ import kotlin.reflect.KProperty
 class MemoViewModel(private val memoRepository: MemoRepository) : ViewModel() {
 
 //    val memoList : LiveData<List<MemoEntity>> = liveData(Dispatchers.IO){
-//        memoIsLoading.postValue(true)
 //        emit(memoRepository.getMemos())
-//        memoIsLoading.postValue(false)
 //    }
 
     val memoList : LiveData<List<MemoEntity>>
         get() = _memoList
 
+
     private val _memoList = MutableLiveData<List<MemoEntity>>()
+
+
+    val memoListUpdateSwitch = MutableLiveData<Boolean>(true)
 
 
     suspend fun insertMemo(title:String, content: String){
         memoRepository.setMemos(MemoEntity(title = title,content = content))
     }
 
-    fun updateMemoList(){
-        viewModelScope.launch{
-
-        }
-    }
-
-    fun initMemoList(){
-        viewModelScope.launch {
-            _memoList.value = memoRepository.getMemos()
-        }
+     suspend fun updateMemoList(){
+         _memoList.postValue(memoRepository.getMemos())
     }
 
 }
